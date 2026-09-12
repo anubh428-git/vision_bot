@@ -1,0 +1,22 @@
+
+# --- App ---
+streamlit>=1.36
+pillow>=10.3
+numpy>=1.26
+pandas>=2.2
+
+# --- Vision models (open-source) ---
+torch>=2.2
+transformers>=4.42          # BLIP (captioning), CLIP (zero-shot tagging + embeddings)
+pytesseract>=0.3.10          # OCR -- also requires the `tesseract-ocr` system binary
+accelerate>=0.31
+
+# --- LLM backend ---
+requests>=2.32                # talks to a local Ollama server (default backend)
+
+# --- Validation / NLP utilities ---
+scikit-learn>=1.5              # TF-IDF overlap scoring used by the response validator
+nltk>=3.8
+
+# --- Optional: external knowledge retrieval used by the planner ---
+duckduckgo-search>=6.1          # lightweight, no-API-key web search (optional tool)
