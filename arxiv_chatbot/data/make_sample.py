@@ -1,0 +1,318 @@
+"""
+Generates data/sample_arxiv_cs.json -- a small, hand-written set of
+arXiv-style CS records (id, title, abstract, categories, authors, update_date)
+in the same schema as the real Kaggle arxiv-metadata-oai-snapshot.json,
+so the rest of the pipeline (data_pipeline.py) works unchanged on either.
+
+Run once:  python data/make_sample.py
+"""
+import json
+import os
+
+SAMPLE = [
+    {
+        "id": "2101.00001",
+        "title": "A Survey of Transformer Architectures for Natural Language Understanding",
+        "abstract": "We review the family of transformer-based neural network architectures that "
+                    "have come to dominate natural language understanding. Starting from the "
+                    "original encoder-decoder design, we trace the development of encoder-only "
+                    "models used for classification and retrieval, decoder-only models used for "
+                    "open-ended generation, and hybrid variants. We discuss self-attention, "
+                    "positional encodings, and the trade-offs between model depth, width, and "
+                    "context length, and summarize common pretraining objectives such as masked "
+                    "language modeling and next-token prediction.",
+        "categories": "cs.CL cs.LG",
+        "authors": "A. Rao, B. Chen",
+        "update_date": "2021-01-05",
+    },
+    {
+        "id": "2103.00045",
+        "title": "Efficient Attention Mechanisms: A Comparative Study",
+        "abstract": "Standard self-attention scales quadratically with sequence length, which "
+                    "limits its use on long documents. This paper compares several efficient "
+                    "attention approximations, including sparse attention patterns, low-rank "
+                    "projections, and kernel-based linear attention. We benchmark each method on "
+                    "language modeling and document classification tasks and analyze the accuracy "
+                    "versus memory trade-off.",
+        "categories": "cs.LG cs.CL",
+        "authors": "C. Okafor",
+        "update_date": "2021-03-12",
+    },
+    {
+        "id": "2105.00120",
+        "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+        "abstract": "We propose combining a parametric sequence-to-sequence model with a "
+                    "non-parametric memory accessed through dense vector retrieval over a large "
+                    "text corpus. The retriever finds passages relevant to the input, and the "
+                    "generator conditions on both the input and the retrieved passages to produce "
+                    "an output. This approach improves factual accuracy and allows the model's "
+                    "knowledge to be updated by swapping the retrieval index without retraining.",
+        "categories": "cs.CL cs.IR",
+        "authors": "D. Fischer, E. Wong, F. Novak",
+        "update_date": "2021-05-02",
+    },
+    {
+        "id": "2107.00301",
+        "title": "Contrastive Self-Supervised Learning for Visual Representations",
+        "abstract": "Self-supervised contrastive learning trains an encoder to pull together "
+                    "representations of augmented views of the same image while pushing apart "
+                    "views of different images. We study the role of augmentation strength, "
+                    "negative sample count, and projection-head design, and show that the learned "
+                    "representations transfer well to downstream classification and detection "
+                    "tasks with limited labeled data.",
+        "categories": "cs.CV cs.LG",
+        "authors": "G. Patel",
+        "update_date": "2021-07-19",
+    },
+    {
+        "id": "2109.00512",
+        "title": "Graph Neural Networks: Foundations and Applications",
+        "abstract": "Graph neural networks (GNNs) generalize convolutional operations to "
+                    "irregular, graph-structured data by iteratively aggregating information from "
+                    "a node's neighbors. We formalize message passing, discuss spectral versus "
+                    "spatial formulations, and survey applications including molecular property "
+                    "prediction, recommendation, and traffic forecasting. We also discuss "
+                    "over-smoothing and scalability challenges on large graphs.",
+        "categories": "cs.LG",
+        "authors": "H. Nakamura, I. Silva",
+        "update_date": "2021-09-08",
+    },
+    {
+        "id": "2111.00650",
+        "title": "Federated Learning: Challenges and Open Problems",
+        "abstract": "Federated learning trains a shared model across many decentralized devices "
+                    "holding local data without exchanging that data directly. We categorize "
+                    "statistical heterogeneity, communication efficiency, and privacy as the "
+                    "central open problems, and review algorithms such as federated averaging and "
+                    "secure aggregation. We also discuss differential privacy guarantees and their "
+                    "cost to model accuracy.",
+        "categories": "cs.LG cs.CR cs.DC",
+        "authors": "J. Meier",
+        "update_date": "2021-11-30",
+    },
+    {
+        "id": "2201.00734",
+        "title": "Diffusion Probabilistic Models for Image Synthesis",
+        "abstract": "Diffusion models learn to reverse a gradual noising process, generating "
+                    "images by iteratively denoising a sample of pure noise. We describe the "
+                    "forward and reverse Markov chains, the training objective based on denoising "
+                    "score matching, and sampling acceleration techniques. We compare sample "
+                    "quality and diversity against generative adversarial networks.",
+        "categories": "cs.CV cs.LG",
+        "authors": "K. Andersson, L. Zhou",
+        "update_date": "2022-01-14",
+    },
+    {
+        "id": "2203.00889",
+        "title": "Reinforcement Learning from Human Feedback for Language Model Alignment",
+        "abstract": "We describe a pipeline for aligning language models with human preferences: "
+                    "collecting comparisons between model outputs, training a reward model on "
+                    "those comparisons, and fine-tuning the policy with reinforcement learning "
+                    "against the reward model. We discuss reward hacking, KL-regularization to a "
+                    "reference policy, and evaluation via human preference win-rates.",
+        "categories": "cs.CL cs.LG cs.AI",
+        "authors": "M. Osei, N. Ibrahim",
+        "update_date": "2022-03-22",
+    },
+    {
+        "id": "2205.00970",
+        "title": "Vision Transformers for Image Recognition at Scale",
+        "abstract": "We apply a pure transformer architecture, with no convolutional layers, "
+                    "directly to sequences of image patches. When pretrained on large datasets and "
+                    "transferred to mid-sized recognition benchmarks, the model matches or exceeds "
+                    "convolutional baselines while requiring substantially less compute for "
+                    "training. We study the role of dataset scale and inductive bias.",
+        "categories": "cs.CV",
+        "authors": "O. Larsen",
+        "update_date": "2022-05-06",
+    },
+    {
+        "id": "2207.01123",
+        "title": "A Taxonomy of Adversarial Attacks on Deep Neural Networks",
+        "abstract": "We organize adversarial attacks on deep learning models along three axes: "
+                    "attacker knowledge (white-box vs. black-box), attack goal (targeted vs. "
+                    "untargeted), and perturbation constraint (norm-bounded vs. semantic). We "
+                    "review gradient-based, optimization-based, and transfer-based attacks, and "
+                    "summarize defenses including adversarial training and certified robustness.",
+        "categories": "cs.CR cs.LG",
+        "authors": "P. Gomez, Q. Tran",
+        "update_date": "2022-07-11",
+    },
+    {
+        "id": "2209.01288",
+        "title": "Efficient Transformers: A Survey",
+        "abstract": "This survey categorizes approaches to reducing the computational cost of "
+                    "transformer models, including sparsification, low-rank approximation, "
+                    "quantization, knowledge distillation, and hardware-aware architecture search. "
+                    "We report the accuracy-efficiency trade-off reported by each method on "
+                    "standard benchmarks and identify open challenges for deployment on edge "
+                    "devices.",
+        "categories": "cs.LG cs.CL",
+        "authors": "R. Haddad",
+        "update_date": "2022-09-02",
+    },
+    {
+        "id": "2211.01345",
+        "title": "Instruction Tuning Improves Zero-Shot Generalization in Language Models",
+        "abstract": "We fine-tune a large language model on a collection of tasks phrased as "
+                    "natural-language instructions and evaluate its ability to follow instructions "
+                    "for tasks it has not seen during fine-tuning. Instruction tuning substantially "
+                    "improves zero-shot performance compared to the base pretrained model, and "
+                    "gains increase with the number and diversity of tasks used for tuning.",
+        "categories": "cs.CL cs.AI",
+        "authors": "S. Vasquez, T. Lindgren",
+        "update_date": "2022-11-15",
+    },
+    {
+        "id": "2301.01456",
+        "title": "Parameter-Efficient Fine-Tuning of Large Language Models",
+        "abstract": "Full fine-tuning of large language models is expensive because it updates "
+                    "every parameter for every downstream task. We compare parameter-efficient "
+                    "alternatives, including adapter modules, low-rank update matrices, and prompt "
+                    "tuning, and show they can match full fine-tuning accuracy while updating a "
+                    "small fraction of parameters and enabling multiple tasks to share a single "
+                    "frozen backbone.",
+        "categories": "cs.CL cs.LG",
+        "authors": "U. Kowalski",
+        "update_date": "2023-01-09",
+    },
+    {
+        "id": "2303.01567",
+        "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+        "abstract": "We show that prompting a large language model with a few examples that "
+                    "include intermediate reasoning steps, rather than only input-output pairs, "
+                    "substantially improves its performance on arithmetic, commonsense, and "
+                    "symbolic reasoning tasks. This capability emerges primarily in sufficiently "
+                    "large models and does not require any additional training.",
+        "categories": "cs.CL cs.AI",
+        "authors": "V. Petrov, W. Adeyemi",
+        "update_date": "2023-03-04",
+    },
+    {
+        "id": "2305.01678",
+        "title": "Retrieval-Augmented Code Generation with Large Language Models",
+        "abstract": "We augment a code-generating language model with a retriever over a corpus "
+                    "of existing source code and documentation. Retrieved snippets are inserted "
+                    "into the prompt as additional context before generation. This improves "
+                    "correctness on unseen library APIs and reduces hallucinated function calls "
+                    "compared to generation from the base model alone.",
+        "categories": "cs.SE cs.CL cs.LG",
+        "authors": "X. Moreno",
+        "update_date": "2023-05-21",
+    },
+    {
+        "id": "2307.01789",
+        "title": "Scaling Laws for Neural Language Models",
+        "abstract": "We study how the loss of a language model varies with model size, dataset "
+                    "size, and training compute, and find that these relationships follow smooth "
+                    "power laws across many orders of magnitude. We use these scaling laws to "
+                    "determine the compute-optimal allocation between model size and number of "
+                    "training tokens for a fixed compute budget.",
+        "categories": "cs.LG cs.CL",
+        "authors": "Y. Sokolov, Z. Ferreira",
+        "update_date": "2023-07-17",
+    },
+    {
+        "id": "2309.01890",
+        "title": "Multi-Agent Reinforcement Learning for Coordinated Robot Navigation",
+        "abstract": "We train a team of mobile robots to navigate a shared environment while "
+                    "avoiding collisions using multi-agent reinforcement learning with a "
+                    "centralized critic and decentralized policies. We introduce a communication "
+                    "channel that lets agents share short latent messages and show it reduces "
+                    "deadlocks compared to policies without communication.",
+        "categories": "cs.RO cs.LG cs.AI",
+        "authors": "A. Bergman",
+        "update_date": "2023-09-08",
+    },
+    {
+        "id": "2311.01901",
+        "title": "Mixture-of-Experts Layers for Scaling Language Models Efficiently",
+        "abstract": "Mixture-of-experts layers replace a single dense feed-forward block with "
+                    "many expert sub-networks and a learned router that activates only a small "
+                    "subset per token. This decouples model capacity from per-token computation, "
+                    "allowing very large models to be trained at a fraction of the compute cost of "
+                    "an equivalently sized dense model, at the cost of added routing complexity.",
+        "categories": "cs.LG cs.CL",
+        "authors": "B. Almeida, C. Yilmaz",
+        "update_date": "2023-11-02",
+    },
+    {
+        "id": "2401.02012",
+        "title": "Homomorphic Encryption for Privacy-Preserving Machine Learning Inference",
+        "abstract": "We evaluate fully homomorphic encryption schemes that allow a server to run "
+                    "neural network inference directly on encrypted client data without ever "
+                    "decrypting it. We benchmark latency and accuracy for common encrypted "
+                    "approximations of nonlinear activation functions and discuss the trade-off "
+                    "between encryption parameters, security level, and inference speed.",
+        "categories": "cs.CR cs.LG",
+        "authors": "D. Costa",
+        "update_date": "2024-01-11",
+    },
+    {
+        "id": "2403.02123",
+        "title": "Long-Context Language Models: Architectures and Evaluation",
+        "abstract": "We survey architectural changes that extend the usable context length of "
+                    "transformer language models, including relative and rotary position "
+                    "encodings, sliding-window and dilated attention, and recurrent memory "
+                    "modules. We also review benchmarks designed to test whether models actually "
+                    "use distant context rather than ignoring it.",
+        "categories": "cs.CL cs.LG",
+        "authors": "E. Nowak, F. Diallo",
+        "update_date": "2024-03-06",
+    },
+    {
+        "id": "2405.02234",
+        "title": "Benchmarking Large Language Models on Multi-Step Scientific Reasoning",
+        "abstract": "We introduce a benchmark of multi-step problems drawn from physics, "
+                    "chemistry, and biology that require chaining several reasoning steps to reach "
+                    "a correct final answer. We find that model accuracy degrades sharply as the "
+                    "number of required steps increases, and that models frequently produce a "
+                    "correct final answer despite an incorrect intermediate step.",
+        "categories": "cs.CL cs.AI",
+        "authors": "G. Ueda",
+        "update_date": "2024-05-14",
+    },
+    {
+        "id": "2407.02345",
+        "title": "Energy-Based Anomaly Detection in Distributed Systems",
+        "abstract": "We model the normal operating behavior of a distributed system with an "
+                    "energy-based model trained on system telemetry, and flag time windows with "
+                    "high energy (low likelihood under the learned model) as anomalies. Compared "
+                    "to threshold-based alerting, this approach adapts to gradual workload shifts "
+                    "and detects a wider range of failure modes with fewer false positives.",
+        "categories": "cs.DC cs.LG",
+        "authors": "H. Kaczmarek, I. Osei",
+        "update_date": "2024-07-19",
+    },
+    {
+        "id": "2409.02456",
+        "title": "Curriculum Learning for Sample-Efficient Reinforcement Learning",
+        "abstract": "We order training tasks from easy to hard using an automatically estimated "
+                    "difficulty score, and show that this curriculum improves sample efficiency "
+                    "and final performance compared to training on a fixed or random task "
+                    "distribution. We analyze how curriculum pacing interacts with exploration "
+                    "strategy across several sparse-reward environments.",
+        "categories": "cs.LG cs.AI",
+        "authors": "J. Rousseau",
+        "update_date": "2024-09-10",
+    },
+    {
+        "id": "2411.02567",
+        "title": "Sparse Mixture Retrieval for Scalable Open-Domain Question Answering",
+        "abstract": "We combine sparse lexical retrieval with dense vector retrieval using a "
+                    "learned mixing weight, and show that the hybrid retriever outperforms either "
+                    "method alone on open-domain question answering, particularly for queries "
+                    "containing rare entity names that dense retrieval alone tends to miss.",
+        "categories": "cs.IR cs.CL",
+        "authors": "K. Aiyegbusi, L. Marchetti",
+        "update_date": "2024-11-01",
+    },
+]
+
+if __name__ == "__main__":
+    out_path = os.path.join(os.path.dirname(__file__), "sample_arxiv_cs.json")
+    # arxiv-metadata-oai-snapshot.json is newline-delimited JSON (one record per line)
+    with open(out_path, "w", encoding="utf-8") as f:
+        for rec in SAMPLE:
+            f.write(json.dumps(rec) + "\n")
+    print(f"Wrote {len(SAMPLE)} sample records to {out_path}")

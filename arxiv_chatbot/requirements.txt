@@ -1,0 +1,27 @@
+
+# --- Core app ---
+streamlit>=1.36
+pandas>=2.2
+numpy>=1.26
+tqdm>=4.66
+
+# --- NLP / embeddings / retrieval ---
+sentence-transformers>=3.0
+faiss-cpu>=1.8          # use faiss-gpu instead if you have a CUDA GPU
+scikit-learn>=1.5
+nltk>=3.8
+
+# --- Summarization + open-source LLM generation ---
+transformers>=4.42
+torch>=2.2               # install the CUDA build from pytorch.org if you have a GPU
+accelerate>=0.31
+sentencepiece>=0.2.0
+
+# Optional: talk to a local Ollama server instead of loading a HF LLM in-process
+# (recommended for 7B+ instruct models on modest hardware)
+requests>=2.32
+
+# --- Visualization ---
+plotly>=5.22
+networkx>=3.3
+umap-learn>=0.5.6
