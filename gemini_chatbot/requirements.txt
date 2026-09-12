@@ -1,0 +1,5 @@
+streamlit>=1.36
+google-genai>=1.20
+python-dotenv>=1.0
+pillow>=10.3
+nltk>=3.9              # VADER sentiment analysis (falls back to a built-in lexicon if unavailable)
