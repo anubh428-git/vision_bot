@@ -1,0 +1,16 @@
+[
+  {"concept": "reset_password", "en": "reset password", "es": "restablecer contraseña", "fr": "réinitialiser le mot de passe", "hi": "पासवर्ड रीसेट करें"},
+  {"concept": "forgot_password", "en": "forgot my password", "es": "olvidé mi contraseña", "fr": "mot de passe oublié", "hi": "पासवर्ड भूल गया"},
+  {"concept": "refund", "en": "refund", "es": "reembolso", "fr": "remboursement", "hi": "धनवापसी"},
+  {"concept": "money_back", "en": "money back", "es": "devolver mi dinero", "fr": "remboursé", "hi": "पैसे वापस"},
+  {"concept": "refund_policy", "en": "refund policy", "es": "política de reembolso", "fr": "politique de remboursement", "hi": "धनवापसी नीति"},
+  {"concept": "shipping", "en": "shipping", "es": "envío", "fr": "livraison", "hi": "शिपिंग"},
+  {"concept": "international_shipping", "en": "international shipping", "es": "envío internacional", "fr": "livraison internationale", "hi": "अंतरराष्ट्रीय शिपिंग"},
+  {"concept": "order", "en": "order", "es": "pedido", "fr": "commande", "hi": "ऑर्डर"},
+  {"concept": "help", "en": "help", "es": "ayuda", "fr": "aide", "hi": "मदद"},
+  {"concept": "account", "en": "account", "es": "cuenta", "fr": "compte", "hi": "खाता"},
+  {"concept": "email", "en": "email", "es": "correo electrónico", "fr": "e-mail", "hi": "ईमेल"},
+  {"concept": "thank_you", "en": "thank you", "es": "gracias", "fr": "merci", "hi": "धन्यवाद"},
+  {"concept": "yes", "en": "yes", "es": "sí", "fr": "oui", "hi": "हाँ"},
+  {"concept": "no", "en": "no", "es": "no", "fr": "non", "hi": "नहीं"}
+]

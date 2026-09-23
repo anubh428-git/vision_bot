@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Support KB Chatbot</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="layout">
+    <main class="chat-pane">
+      <header class="chat-header">
+        <h1>Support Assistant</h1>
+        <span class="subtitle">Answers are grounded in the live knowledge base</span>
+        <span id="lang-badge" class="lang-badge">Speaks: …</span>
+      </header>
+
+      <div id="messages" class="messages"></div>
+
+      <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" placeholder="Ask a support question…" autocomplete="off" />
+        <button type="submit">Send</button>
+      </form>
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Knowledge Sources</h2>
+        <span id="chunk-stat" class="stat"></span>
+      </div>
+
+      <form id="source-form" class="source-form">
+        <select id="source-type">
+          <option value="url">Web page (URL)</option>
+          <option value="text">Pasted text</option>
+          <option value="file">Server file path</option>
+        </select>
+        <textarea id="source-location" placeholder="https://example.com/help/article  (or pasted text / file path)" rows="3"></textarea>
+        <label class="interval-label">
+          Refresh every
+          <input id="source-interval" type="number" min="1" value="60" />
+          minutes
+        </label>
+        <button type="submit">Add & Ingest Now</button>
+      </form>
+
+      <div class="sources-actions">
+        <button id="refresh-all">Refresh all now</button>
+      </div>
+
+      <ul id="source-list" class="source-list"></ul>
+    </aside>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
