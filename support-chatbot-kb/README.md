@@ -1,6 +1,6 @@
 # Support KB Chatbot — Self-Updating Knowledge Base
 
-A customer support chatbot whose knowledge base **grows and refreshes itself
+A customer support chatbot whose knowledge base **grows and refreshes itself 
 automatically** from sources you point it at (web pages, pasted text, or
 local files) — no Streamlit, just a Flask backend + a plain HTML/JS chat UI.
 
