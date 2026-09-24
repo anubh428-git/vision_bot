@@ -35,6 +35,9 @@ body {
   flex-direction: column;
   border-right: 1px solid var(--border);
   min-width: 0;
+  min-height: 0; /* fix: without this, .chat-pane grows to fit .messages content
+                    instead of respecting the 100vh grid row, pushing .chat-form
+                    off-screen with no way to scroll to it */
 }
 
 .chat-header {
